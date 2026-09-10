@@ -1,0 +1,30 @@
+# Build output
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+
+# Test results
+TestResults/
+*.trx
+
+# User-specific files
+*.user
+*.suo
+
+# Coverage
+coverage/
+*.coverage
+*.coveragexml
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Local secrets
+secrets.json
+
+# Logs
+*.log

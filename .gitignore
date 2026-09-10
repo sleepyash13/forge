@@ -1,0 +1,46 @@
+# =========================
+# OS / IDE
+# =========================
+
+.vs/
+.vscode/
+.idea/
+bin/
+obj/
+
+.DS_Store
+Thumbs.db
+
+# Visual Studio user files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# =========================
+# Environment / secrets
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# =========================
+# Logs
+# =========================
+
+*.log
+logs/
+
+# =========================
+# Docker
+# =========================
+
+docker-compose.override.yml
+
+# =========================
+# Temporary
+# =========================
+
+*.tmp
+*.temp

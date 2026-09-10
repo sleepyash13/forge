@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Backend/">
+    <File Path=".dockerignore" />
+    <Project Path="Forge.Api/Forge.Api.csproj" />
+    <Project Path="Forge.Application/Forge.Application.csproj" />
+    <Project Path="Forge.Domain/Forge.Domain.csproj" />
+    <Project Path="Forge.Infrastructure/Forge.Infrastructure.csproj" Id="b080c665-5c91-4606-a3c3-a36478d5a1ce" />
+  </Folder>
+  <Folder Name="/Frontend/">
+    <Project Path="../frontend/Forge.Frontend.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
+</Solution>
