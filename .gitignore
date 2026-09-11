@@ -7,9 +7,15 @@
 .idea/
 bin/
 obj/
+**/bin/
+**/obj/
 
 .DS_Store
 Thumbs.db
+
+# Node
+node_modules/
+dist/
 
 # Visual Studio user files
 *.user

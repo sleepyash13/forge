@@ -1,6 +1,5 @@
 <Solution>
   <Folder Name="/Backend/">
-    <File Path=".dockerignore" />
     <Project Path="Forge.Api/Forge.Api.csproj" />
     <Project Path="Forge.Application/Forge.Application.csproj" />
     <Project Path="Forge.Domain/Forge.Domain.csproj" />
@@ -12,4 +11,7 @@
       <Deploy />
     </Project>
   </Folder>
+  <Project Path="../docker-compose.dcproj" Id="81dded9d-158b-e303-5f62-77a2896d2a5a">
+    <Build />
+  </Project>
 </Solution>

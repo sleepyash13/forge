@@ -1,0 +1,62 @@
+services:
+  forge.api:
+    build:
+      context: .
+      dockerfile: backend/Forge.Api/Dockerfile
+
+    container_name: forge-api
+
+    environment:
+      ConnectionStrings__ForgeDb: "Server=db,1433;Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=True;"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    ports:
+      - "${API_PORT}:8080"
+
+  forge.frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:${API_PORT}
+
+    container_name: forge-frontend
+
+    depends_on:
+      - forge.api
+
+    ports:
+      - "5173:80"
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: forge-db
+    restart: unless-stopped
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_SA_PASSWORD: "${DB_PASSWORD}"
+
+    ports:
+      - "${DB_PORT}:1433"
+
+    volumes:
+      - forge-db-data:/var/opt/mssql
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q \"SELECT 1\" || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+volumes:
+  forge-db-data:

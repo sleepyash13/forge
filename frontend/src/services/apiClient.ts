@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { getCookie } from "../utils/cookie";
 
-const API_BASE_URL = 'http://localhost:5093/api/v1/';
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/v1`;
 
 export const apiClient = axios.create({
     baseURL: API_BASE_URL,
