@@ -1,6 +1,75 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { getUserDetails, type UserProfile } from '../../services/userService';
 
 const Profile = () => {
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        loadProfile();
+    }, []);
+
+    async function loadProfile() {
+        try {
+            setIsLoading(true);
+            setError("");
+
+            const currentUser = await getUserDetails();
+
+            setUser(currentUser);
+        } catch (err) {
+            console.error(err);
+
+            setError(
+                "Unable to load your profile."
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="container-fluid">
+                <h2>Profile</h2>
+                <p>Loading profile...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="container-fluid">
+                <h2>Profile</h2>
+
+                <div className="alert alert-danger">
+                    {error}
+                </div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return (
+            <div className="container-fluid">
+                <h2>Profile</h2>
+                <p>No profile information available.</p>
+            </div>
+        );
+    }
+
+    function formatFriendlyDate(dateString: string) {
+        return new Date(dateString).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric"
+        });
+    }
+
     return (
         <div>
             <div className="mb-4">
@@ -19,11 +88,8 @@ const Profile = () => {
 
                         <div className="ms-3">
                             <h4 className="mb-1">
-                                John Doe
+                                {user.displayName}
                             </h4>
-                            <p className="text-muted mb-1">
-                                john.doe@example.com
-                            </p>
                             <span className="badge bg-success">
                                 Active
                             </span>
@@ -37,7 +103,7 @@ const Profile = () => {
                             </small>
 
                             <div>
-                                John Doe
+                                {user.displayName}
                             </div>
                         </div>
 
@@ -47,7 +113,7 @@ const Profile = () => {
                             </small>
 
                             <div>
-                                john.doe@example.com
+                                {user.email}
                             </div>
                         </div>
 
@@ -57,7 +123,7 @@ const Profile = () => {
                             </small>
 
                             <div>
-                                April 26, 2026
+                                {formatFriendlyDate(user.createdAt)}
                             </div>
                         </div>
 
@@ -67,7 +133,7 @@ const Profile = () => {
                             </small>
 
                             <div>
-                                April 26, 2026
+                                {formatFriendlyDate(user.updatedAt)}
                             </div>
                         </div>
                     </div>

@@ -42,6 +42,9 @@ namespace Forge.Api.Middleware
 
             var statusCode = exception switch
             {
+                KeyNotFoundException =>
+                    (int)HttpStatusCode.NotFound,
+
                 InvalidOperationException =>
                     (int)HttpStatusCode.Conflict,
 
@@ -49,9 +52,7 @@ namespace Forge.Api.Middleware
                     (int)HttpStatusCode.BadRequest,
 
                 UnauthorizedAccessException =>
-                    (int)HttpStatusCode.Unauthorized,
-
-                _ =>
+                    (int)HttpStatusCode.Unauthorized,_ =>
                     (int)HttpStatusCode.InternalServerError
             };
 

@@ -1,5 +1,6 @@
 ﻿using Forge.Application.DTOs.Auth;
 using Forge.Application.Interfaces;
+using Forge.Application.Services.Auth;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +17,17 @@ namespace Forge.Api.Controllers
         private readonly IAntiforgery _antiforgery;
         private readonly ILogger<AuthController> _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IUserService _userService;
 
         public AuthController(IAuthService authService, IAntiforgery antiforgery,
-            ILogger<AuthController> logger, IWebHostEnvironment environment)
+            ILogger<AuthController> logger, IWebHostEnvironment environment,
+            IUserService userService)
         {
             _authService = authService;
             _antiforgery = antiforgery;
             _logger = logger;
             _environment = environment;
+            _userService = userService;
         }
 
         [HttpGet("csrf")]
@@ -134,6 +138,36 @@ namespace Forge.Api.Controllers
             {
                 success = true,
                 message = "Logout successful."
+            });
+        }
+
+        [Authorize]
+        [HttpPut("password")]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        {
+            var userIdClaim = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            if (!Guid.TryParse(userIdClaim, out var userId))
+            {
+                _logger.LogWarning("Password change request contains an invalid user ID claim.");
+
+                return Unauthorized(new
+                {
+                    success = false,
+                    message = "Invalid authentication information."
+                });
+            }
+
+            await _userService.ChangePasswordAsync(userId, request);
+
+            _logger.LogInformation("Password change completed and current authentication cookie invalidated for user {UserId}.", userId);
+
+            return Ok(new
+            {
+                success = true,
+                message = "Password changed successfully. Please log in again."
             });
         }
     }

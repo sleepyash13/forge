@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../../services/authService';
 
 const Topbar = () => {
@@ -30,21 +30,17 @@ const Topbar = () => {
 
                     <ul className="dropdown-menu dropdown-menu-end">
                         <li>
-                            <button
-                                className="dropdown-item"
-                            >
+                            <Link to="/profile" className="dropdown-item" >
                                 <i className="bi bi-person me-2"></i>
                                 Profile
-                            </button>
+                            </Link>
                         </li>
 
                         <li>
-                            <button
-                                className="dropdown-item"
-                            >
+                            <Link to="/account/reset-password" className="dropdown-item" >
                                 <i className="bi bi-gear me-2"></i>
                                 Account Settings
-                            </button>
+                            </Link>
                         </li>
 
                         <li>

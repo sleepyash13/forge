@@ -1,4 +1,5 @@
-﻿using Forge.Application.Interfaces;
+﻿using Forge.Application.DTOs.User;
+using Forge.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -26,8 +27,7 @@ namespace Forge.Api.Controllers
         {
             try
             {
-                var userIdClaim =
-                    User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+                var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
                 if (!Guid.TryParse(userIdClaim, out var userId))
                 {
@@ -58,6 +58,34 @@ namespace Forge.Api.Controllers
 
                 throw;
             }
+        }
+
+        [Authorize]
+        [HttpPut("profile")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
+        {
+            var userIdClaim = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            if (!Guid.TryParse(userIdClaim, out var userId))
+            {
+                _logger.LogWarning("Profile update request contains an invalid user ID claim.");
+
+                return Unauthorized(new
+                {
+                    success = false,
+                    message = "Invalid authentication information."
+                });
+            }
+
+            var result = await _userService.UpdateProfileAsync(userId, request);
+
+            return Ok(new
+            {
+                success = true,
+                message = "Profile updated successfully.",
+                data = result
+            });
         }
     }
 }

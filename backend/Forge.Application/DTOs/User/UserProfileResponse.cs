@@ -10,5 +10,6 @@ namespace Forge.Application.DTOs.User
         public string Email { get; set; } = string.Empty;
         public string? DisplayName { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }
