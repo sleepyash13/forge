@@ -5,6 +5,9 @@ export interface RegisterRequest {
     password: string;
     confirmPassword: string;
     displayName?: string;
+    firstName: string;
+    middleName?: string;
+    lastName: string;
 }
 
 export interface LoginRequest {

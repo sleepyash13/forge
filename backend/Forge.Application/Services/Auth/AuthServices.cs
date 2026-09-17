@@ -1,5 +1,6 @@
 ﻿using Forge.Application.DTOs.Auth;
 using Forge.Application.Interfaces;
+using Forge.Application.Validators;
 using Forge.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,6 +29,13 @@ namespace Forge.Application.Services.Auth
         {
             try
             {
+                RegisterValidator.Validate(request);
+
+                string firstName = request.FirstName.Trim();
+                var middleName = string.IsNullOrWhiteSpace(request.MiddleName) ? null : request.MiddleName.Trim();
+                string lastName = request.LastName.Trim();
+                var displayName = string.IsNullOrWhiteSpace(request.DisplayName) ? null : request.DisplayName.Trim();
+
                 var email = request.Email.Trim().ToLowerInvariant();
 
                 if (request.Password != request.ConfirmPassword)
@@ -49,22 +57,20 @@ namespace Forge.Application.Services.Auth
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
-
+                    FirstName = firstName,
+                    LastName = lastName,
+                    MiddleName = middleName,
                     Email = request.Email,
-
                     DisplayName = request.DisplayName,
-
                     PasswordHash = passwordHash,
-
-                    CreatedAt = DateTime.UtcNow,
-
+                    CreatedAt = DateTime.Now,
                     IsActive = true
                 };
 
                 await _userRepository.AddAsync(user);
                 await _userRepository.SaveChangesAsync();
 
-                _logger.LogInformation("User {UserId} registered successfully", user.Id);
+                _logger.LogInformation("User {UserId} registered successfully with email {Email}.", user.Id, user.Email);
             }
             catch (InvalidOperationException) { throw; }
             catch (Exception ex)

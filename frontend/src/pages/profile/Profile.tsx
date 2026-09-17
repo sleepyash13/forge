@@ -88,7 +88,7 @@ const Profile = () => {
 
                         <div className="ms-3">
                             <h4 className="mb-1">
-                                {user.displayName}
+                                {user.lastName}{','}{user.firstName}{' '}{user.middleName ? `${user.middleName} ` : ''}
                             </h4>
                             <span className="badge bg-success">
                                 Active
@@ -99,7 +99,7 @@ const Profile = () => {
                     <div className="row mt-4">
                         <div className="col-md-6 mb-3">
                             <small className="text-muted">
-                                Full Name
+                                Display Name
                             </small>
 
                             <div>

@@ -50,10 +50,11 @@ const EditProfile = () => {
             const trimmedDisplayName = displayName.trim();
 
             const updatedProfile = await updateProfile({
-                displayName:
-                    trimmedDisplayName.length > 0
-                        ? trimmedDisplayName
-                        : null,
+                displayName: trimmedDisplayName.length > 0 ? trimmedDisplayName : null,
+                firstName: user?.firstName ? user?.firstName : '',
+                lastName: user?.lastName ? user?.lastName : '',
+                middleName: user?.middleName ? user?.middleName : '',
+                email: user?.email ? user?.email : ''
             });
 
             setUser(updatedProfile);
@@ -115,17 +116,42 @@ const EditProfile = () => {
             <div className="card border-0 shadow-sm">
                 <div className="card-body p-4">
                     <form onSubmit={handleSubmit} >
-                        <div className="mb-3">
-                            <label className="form-label">
-                                Full Name
-                            </label>
+                        <div className="row mb-3">
+                            <div className="col-md-4">
+                                <label className="form-label">First Name</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={user?.firstName}
+                                    onChange={(e) =>
+                                        setUser((prev) => prev ? { ...prev, firstName: e.target.value } : prev)
+                                    }
+                                />
+                            </div>
 
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={user?.displayName ?? ''}
-                                disabled
-                            />
+                            <div className="col-md-4">
+                                <label className="form-label">Middle Name</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={user?.middleName ?? ''}
+                                    onChange={(e) =>
+                                        setUser((prev) => prev ? { ...prev, middleName: e.target.value } : prev)
+                                    }
+                                />
+                            </div>
+
+                            <div className="col-md-4">
+                                <label className="form-label">Last Name</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={user?.lastName}
+                                    onChange={(e) =>
+                                        setUser((prev) => prev ? { ...prev, lastName: e.target.value } : prev)
+                                    }
+                                />
+                            </div>
                         </div>
 
                         <div className="mb-3">
@@ -136,8 +162,10 @@ const EditProfile = () => {
                             <input
                                 type="email"
                                 className="form-control"
-                                value={user?.email ?? ''}
-                                disabled
+                                value={user?.email}
+                                onChange={(e) =>
+                                    setUser((prev) => prev ? { ...prev, email: e.target.value } : prev)
+                                }
                             />
                         </div>
 

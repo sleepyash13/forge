@@ -4,6 +4,9 @@ import { getCsrfToken } from '../services/authService';
 export interface UserProfile {
     id: string;
     email: string;
+    firstName: string;
+    middleName: string | null;
+    lastName: string;
     displayName: string | null;
     createdAt: string;
     updatedAt: string;
@@ -17,6 +20,10 @@ interface UserProfileResponse {
 
 export interface UpdateProfileRequest {
     displayName: string | null;
+    firstName: string;
+    middleName: string | null;
+    lastName: string;
+    email: string;
 }
 
 interface UpdateProfileResponse {

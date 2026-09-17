@@ -1,4 +1,5 @@
-﻿using Forge.Application.DTOs.Auth;
+﻿using Forge.Application.Common;
+using Forge.Application.DTOs.Auth;
 using Forge.Application.DTOs.User;
 using Forge.Application.Interfaces;
 using Forge.Application.Validators;
@@ -49,6 +50,9 @@ namespace Forge.Application.Services.Auth
                 {
                     Id = user.Id,
                     Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    MiddleName = user.MiddleName,
                     DisplayName = user.DisplayName,
                     CreatedAt = user.CreatedAt,
                     UpdatedAt = user.UpdatedAt ?? user.CreatedAt
@@ -76,9 +80,20 @@ namespace Forge.Application.Services.Auth
                     throw new KeyNotFoundException("User not found.");
                 }
 
-                user.DisplayName = request.DisplayName;
+                NameValidator.Validate(request.FirstName, "First Name", true);
+                NameValidator.Validate(request.LastName, "Last Name", true);
+                NameValidator.Validate(request.MiddleName, "Middle Name", false);
+                NameValidator.ValidateDisplayName(request.DisplayName);
 
-                user.UpdatedAt = DateTime.UtcNow;
+                RegisterValidator.IsValidEmail(request.Email);
+
+                user.FirstName = request.FirstName;
+                user.LastName = request.LastName;
+                user.MiddleName = string.IsNullOrWhiteSpace(request.MiddleName) ? null : request.MiddleName.Trim();
+                user.DisplayName = request.DisplayName;
+                user.Email = request.Email;
+
+                user.UpdatedAt = DateTime.Now;
 
                 await _userRepository.SaveChangesAsync();
 
@@ -88,8 +103,12 @@ namespace Forge.Application.Services.Auth
                 {
                     Id = user.Id,
                     Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    MiddleName = user.MiddleName,
                     DisplayName = user.DisplayName,
-                    CreatedAt = user.CreatedAt
+                    CreatedAt = user.CreatedAt,
+                    UpdatedAt = user.UpdatedAt ?? user.CreatedAt
                 };
             }
             catch (Exception ex)
