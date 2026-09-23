@@ -9,9 +9,10 @@ import {
 import {
     getCurrentUser,
     login as loginRequest,
-    logout as logoutRequest,
-    type AuthUser,
-} from "../services/authService";
+    logout as logoutRequest
+} from "../features/auth/services/authService";
+
+import type { AuthUser } from '../features/auth/types/auth.types'
 
 interface AuthContextValue {
     user: AuthUser | null;

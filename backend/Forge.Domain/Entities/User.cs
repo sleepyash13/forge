@@ -16,5 +16,6 @@ namespace Forge.Domain.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; }
+        public ICollection<ProjectMember> ProjectMemberships { get; set; } = new List<ProjectMember>();
     }
 }

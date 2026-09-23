@@ -1,5 +1,7 @@
-﻿using Forge.Application.DTOs.Auth;
-using Forge.Application.Interfaces;
+﻿using Forge.Application.Common.Extensions;
+using Forge.Application.DTOs.Auth;
+using Forge.Application.Interfaces.Auth;
+using Forge.Application.Interfaces.Users;
 using Forge.Application.Services.Auth;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
@@ -53,8 +55,6 @@ namespace Forge.Api.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
-            _logger.LogInformation("Register endpoint reached.");
-
             await _authService.RegisterAsync(request);
 
             return Ok(new
@@ -94,20 +94,9 @@ namespace Forge.Api.Controllers
         [HttpGet("me")]
         public async Task<IActionResult> Me()
         {
-            var userIdClaim =User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            var emailClaim =User.FindFirstValue(JwtRegisteredClaimNames.Email);
+            var userId = User.GetUserId();
+            var emailClaim = User.FindFirstValue(ClaimTypes.Email);
             var displayNameClaim = User.FindFirstValue(ClaimTypes.Name);
-
-            if (!Guid.TryParse(userIdClaim, out var userId))
-            {
-                _logger.LogWarning("Authenticated request contains an invalid user ID claim.");
-
-                return Unauthorized(new
-                {
-                    success = false,
-                    message = "Invalid authentication information."
-                });
-            }
 
             return Ok(new
             {
@@ -147,18 +136,7 @@ namespace Forge.Api.Controllers
 
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
-            var userIdClaim = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-
-            if (!Guid.TryParse(userIdClaim, out var userId))
-            {
-                _logger.LogWarning("Password change request contains an invalid user ID claim.");
-
-                return Unauthorized(new
-                {
-                    success = false,
-                    message = "Invalid authentication information."
-                });
-            }
+            var userId = User.GetUserId();
 
             await _userService.ChangePasswordAsync(userId, request);
 

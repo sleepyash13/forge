@@ -11,7 +11,6 @@ The project purpose focuses on authentication, authorization, anti-forgery prote
 - React
 - TypeScript
 - Protected routes
-- Protected routes
 - Authentication state management
 - API integration with credentialed requests
 - Docker

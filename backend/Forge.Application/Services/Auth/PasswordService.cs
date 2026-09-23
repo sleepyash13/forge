@@ -1,4 +1,4 @@
-﻿using Forge.Application.Interfaces;
+﻿using Forge.Application.Interfaces.Auth;
 using Forge.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;

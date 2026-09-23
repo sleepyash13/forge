@@ -1,5 +1,6 @@
-﻿using Forge.Application.DTOs.User;
-using Forge.Application.Interfaces;
+﻿using Forge.Application.Common.Extensions;
+using Forge.Application.DTOs.Users;
+using Forge.Application.Interfaces.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,9 +8,10 @@ using System.Security.Claims;
 
 namespace Forge.Api.Controllers
 {
-
+    [Authorize]
     [ApiController]
     [Route("api/v1/users")]
+
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -21,62 +23,25 @@ namespace Forge.Api.Controllers
             _logger = logger;
         }
 
-        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
         {
-            try
+            var userId = User.GetUserId();
+
+            var result = await _userService.GetCurrentUserAsync(userId);
+
+            return Ok(new
             {
-                var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-
-                if (!Guid.TryParse(userIdClaim, out var userId))
-                {
-                    _logger.LogWarning("Authenticated request contains an invalid user ID claim.");
-
-                    return Unauthorized(new
-                    {
-                        success = false,
-                        message = "Invalid authentication information."
-                    });
-                }
-
-                var result = await _userService.GetCurrentUserAsync(userId);
-
-                return Ok(new
-                {
-                    success = true,
-                    data = result
-                });
-            }
-            catch (UnauthorizedAccessException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error retrieving current user profile.");
-
-                throw;
-            }
+                success = true,
+                data = result
+            });
         }
 
-        [Authorize]
         [HttpPut("profile")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
         {
-            var userIdClaim = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-
-            if (!Guid.TryParse(userIdClaim, out var userId))
-            {
-                _logger.LogWarning("Profile update request contains an invalid user ID claim.");
-
-                return Unauthorized(new
-                {
-                    success = false,
-                    message = "Invalid authentication information."
-                });
-            }
+            var userId = User.GetUserId();
 
             var result = await _userService.UpdateProfileAsync(userId, request);
 

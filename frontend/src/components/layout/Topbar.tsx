@@ -1,8 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../../services/authService';
+import { logout } from '../../features/auth/services/authService';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Topbar = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+
     const handleLogout = async () => {
         try {
             await logout();
@@ -25,7 +28,7 @@ const Topbar = () => {
                         data-bs-toggle="dropdown"
                     >
                         <i className="bi bi-person-circle me-2"></i>
-                        John Doe
+                        { user?.displayName }
                     </button>
 
                     <ul className="dropdown-menu dropdown-menu-end">

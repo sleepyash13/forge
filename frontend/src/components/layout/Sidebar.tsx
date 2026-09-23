@@ -12,28 +12,14 @@ const Sidebar = () => {
             </div>
 
             <nav className="sidebar-nav">
-                <NavLink
-                    to="/dashboard"
-                    className="sidebar-link"
-                >
+                <NavLink to="/dashboard" className="sidebar-link">
                     <i className="bi bi-house"></i>
                     <span>Dashboard</span>
                 </NavLink>
-
-                <NavLink
-                    to="/profile"
-                    className="sidebar-link"
-                >
-                    <i className="bi bi-person"></i>
-                    <span>Profile</span>
-                </NavLink>
-
-                <NavLink
-                    to="/account/reset-password"
-                    className="sidebar-link"
-                >
-                    <i className="bi bi-gear"></i>
-                    <span>Account Settings</span>
+                
+                <NavLink to="/projects" className="sidebar-link">
+                    <i className="bi bi-folder"></i>
+                    <span>Projects</span>
                 </NavLink>
             </nav>
         </aside>

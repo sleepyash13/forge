@@ -1,7 +1,8 @@
 ﻿using Forge.Application.Common;
 using Forge.Application.DTOs.Auth;
-using Forge.Application.DTOs.User;
-using Forge.Application.Interfaces;
+using Forge.Application.DTOs.Users;
+using Forge.Application.Interfaces.Auth;
+using Forge.Application.Interfaces.Users;
 using Forge.Application.Validators;
 using Microsoft.Extensions.Logging;
 using System;

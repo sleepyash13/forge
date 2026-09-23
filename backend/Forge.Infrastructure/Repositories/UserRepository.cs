@@ -1,4 +1,4 @@
-﻿using Forge.Application.Interfaces;
+﻿using Forge.Application.Interfaces.Users;
 using Forge.Domain.Entities;
 using Forge.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

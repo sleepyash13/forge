@@ -1,4 +1,4 @@
-﻿using Forge.Application.Interfaces;
+﻿using Forge.Application.Interfaces.Auth;
 using Forge.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -41,8 +41,8 @@ namespace Forge.Infrastructure.Authentication
                 var expiryMinutes = double.Parse(jwtConfig["Expiry"] ?? "60");
                 var claims = new List<Claim>
                 {
-                    new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                    new(JwtRegisteredClaimNames.Email, user.Email.ToString()),
+                    new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new(ClaimTypes.Email, user.Email.ToString()),
                     new(ClaimTypes.Name, user.DisplayName ?? user.Email)
                 };
 

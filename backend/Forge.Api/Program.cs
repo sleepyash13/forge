@@ -1,13 +1,17 @@
-using Forge.Application.Interfaces;
+using Forge.Api.Middleware;
+using Forge.Application.Interfaces.Auth;
+using Forge.Application.Interfaces.Projects;
+using Forge.Application.Interfaces.Users;
 using Forge.Application.Services.Auth;
+using Forge.Application.Services.Projects;
+using Forge.Domain.Entities;
+using Forge.Infrastructure.Authentication;
+using Forge.Infrastructure.Logging;
 using Forge.Infrastructure.Persistence;
 using Forge.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Forge.Domain.Entities;
-using Forge.Api.Middleware;
-using Forge.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -33,6 +37,8 @@ builder.Services.AddDbContext<ForgeDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ForgeDb"));
 });
 
+builder.Services.AddHttpContextAccessor();
+
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -40,6 +46,12 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
+builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+builder.Services.AddScoped<IProjectAuthorizationService, ProjectAuthorizationService>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+builder.Services.AddScoped<IProjectAuthorizationService, ProjectAuthorizationService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured.");
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
@@ -87,6 +99,10 @@ builder.Services.AddAntiforgery(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
     options.Cookie.Path = "/";
 });
+
+
+builder.Logging.ClearProviders();
+builder.Logging.Services.AddSingleton<ILoggerProvider, DatabaseLoggerProvider>();
 
 var app = builder.Build();
 
