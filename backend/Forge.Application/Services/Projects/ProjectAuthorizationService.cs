@@ -80,6 +80,7 @@ namespace Forge.Application.Services.Projects
                     ProjectPermission.Deploy => true,
                     ProjectPermission.ManageSettings => true,
                     ProjectPermission.DeleteProject => true,
+                    ProjectPermission.ArchiveProject => true,
                     _ => false
                 },
 
@@ -92,6 +93,7 @@ namespace Forge.Application.Services.Projects
                     ProjectPermission.Deploy => true,
                     ProjectPermission.ManageSettings => true,
                     ProjectPermission.DeleteProject => false,
+                    ProjectPermission.ArchiveProject => false,
                     _ => false
                 },
 

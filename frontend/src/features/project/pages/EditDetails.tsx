@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import projectService from '../services/projectService';
 import type { Project } from '../types/project.types';
+import Swal from 'sweetalert2';
 
 export default function ProjectDetails() {
     const { projectId } = useParams();
@@ -90,6 +91,54 @@ export default function ProjectDetails() {
         }
     };
 
+    const handleArchive = async () => {
+        if (!projectId) {
+            return;
+        }
+
+        const result = await Swal.fire({
+            icon: 'warning',
+            title: 'Archive project?',
+            text: 'This project will be marked as archived.',
+            showCancelButton: true,
+            confirmButtonText: 'Archive',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        try {
+            await projectService.archive(projectId);
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Project archived',
+                text: 'The project has been archived successfully.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            navigate("/projects");
+        }
+        catch (error: any) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Unable to archive project',
+                text: error?.response?.data?.message ??
+                    'An unexpected error occurred.'
+            });
+        }
+    };
+
+    const handleMembers = () => {
+        if (!projectId) {
+            return;
+        }
+        navigate(`/projects/${projectId}/members`);
+    };
+
     if (loading) {
         return (
             <div className="container-fluid">
@@ -113,11 +162,17 @@ export default function ProjectDetails() {
             <div className="row">
                 <div className="col-lg-8">
                     <div className="card">
-                        <div className="card-header">
-                            <h5 className="mb-0">
-                                Project
-                            </h5>
+                        <div className="card-header d-flex justify-content-between align-items-center">
+                            <h5 className="mb-0">Project</h5>
+
+                            <button
+                                className="btn btn-sm btn-outline-primary"
+                                onClick={handleMembers}>
+                                <i className="bi bi-person-plus me-1"></i>
+                                Add Member
+                            </button>
                         </div>
+
 
                         <div className="card-body">
                             {message && (
@@ -155,6 +210,11 @@ export default function ProjectDetails() {
                             <div className="d-flex gap-2">
                                 <button className="btn btn-primary" onClick={handleUpdate} disabled={saving} >
                                     {saving ? "Saving..." : "Save Changes"}
+                                </button>
+
+                                <button type='button' className='btn btn-warning' onClick={handleArchive} 
+                                    disabled={!project?.isActive}>
+                                    Archive Project
                                 </button>
 
                                 <button className="btn btn-danger" onClick={handleDelete} >

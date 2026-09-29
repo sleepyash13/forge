@@ -80,7 +80,8 @@ namespace Forge.Infrastructure.Repositories
         {
             try
             {
-                return await _dbContext.Projects.Where(x => x.Members.Any(m => m.UserId == userId))
+                return await _dbContext.Projects
+                    .Where(x => x.Members.Any(m => m.UserId == userId) && x.IsActive)
                     .OrderByDescending(x => x.CreatedAt)
                     .ToListAsync();
             }

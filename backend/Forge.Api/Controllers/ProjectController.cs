@@ -74,5 +74,19 @@ namespace Forge.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("{projectId:guid}/archive")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Archive(Guid projectId)
+        {
+            var userId = User.GetUserId();
+            await _projectService.ArchiveAsync(userId, projectId);
+
+            return Ok(new
+            {
+                success = true,
+                message = "Project archived successfully."
+            });
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace Forge.Application.Interfaces.Projects
         Task<ProjectResponse> UpdateAsync(Guid userId, Guid projectId, UpdateProjectRequest request);
         Task DeleteAsync(Guid userId, Guid projectId);
         Task<List<ProjectResponse>> GetMyProjectsAsync(Guid userId);
+        Task ArchiveAsync(Guid userId, Guid projectId);
     }
 }

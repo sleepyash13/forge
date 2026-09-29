@@ -8,6 +8,7 @@ import type {
 
 const projectService = {
     async create(request: CreateProjectRequest): Promise<Project> {
+        await getCsrfToken();
         const response = await apiClient.post<Project>("/projects", request);
 
         return response.data;
@@ -20,12 +21,14 @@ const projectService = {
     },
 
     async update(projectId: string, request: UpdateProjectRequest): Promise<Project> {
+        await getCsrfToken();
         const response = await apiClient.put<Project>(`/projects/${projectId}`, request);
 
         return response.data;
     },
 
     async delete(projectId: string): Promise<void> {
+        await getCsrfToken();
         await apiClient.delete(`/projects/${projectId}`);
     },
 
@@ -33,6 +36,11 @@ const projectService = {
         const response = await apiClient.get<Project[]>('/projects');
 
         return response.data;
+    },
+
+    async archive(projectId: string): Promise<void> {
+        await getCsrfToken();
+        await apiClient.post(`/projects/${projectId}/archive`);
     },
 };
 

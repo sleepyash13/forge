@@ -165,5 +165,33 @@ namespace Forge.Application.Services.Projects
                 throw;
             }
         }
+
+        public async Task ArchiveAsync(Guid userId, Guid projectId)
+        {
+            try
+            {
+                var allowed = await _authorizationService.HasPermissionAsync(userId, projectId, ProjectPermission.ArchiveProject);
+
+                if (!allowed) throw new UnauthorizedAccessException("You do not have permission to archive this project.");
+
+                var project = await _projectRepository.GetByIdAsync(projectId);
+
+                if (project is null)  throw new KeyNotFoundException("Project not found.");
+                if (!project.IsActive) throw new InvalidOperationException("Project is already archived."); 
+
+                project.IsActive = false;
+                project.UpdatedAt = DateTime.UtcNow;
+
+                await _projectRepository.SaveChangesAsync();
+
+                _logger.LogInformation("Project {ProjectId} archived by user {UserId}", projectId, userId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error archiving project {ProjectId} by user {UserId}", projectId, userId);
+
+                throw;
+            }
+        }
     }
 }

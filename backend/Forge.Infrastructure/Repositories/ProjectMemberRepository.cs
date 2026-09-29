@@ -24,13 +24,35 @@ namespace Forge.Infrastructure.Repositories
         {
             try
             {
-                var projectMember = await _dbContext.ProjectMembers.FirstOrDefaultAsync(x => x.UserId == userId && x.ProjectId == projectId);
+                var projectMember = await _dbContext.ProjectMembers
+                    .Include(x => x.User)
+                    .FirstOrDefaultAsync(x => x.UserId == userId && x.ProjectId == projectId);
 
                 return projectMember;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving project membership for user {UserId} and project {ProjectId}", userId, projectId);
+
+                throw;
+            }
+        }
+        public async Task<List<ProjectMember>> GetProjectMembersAsync(Guid projectId)
+        {
+            try
+            {
+                return await _dbContext.ProjectMembers
+                    .Include(x => x.User)
+                    .Where(x => x.ProjectId == projectId)
+                    .OrderBy(x => x.CreatedAt)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error retrieving members for project {ProjectId}",
+                    projectId);
 
                 throw;
             }
@@ -45,6 +67,36 @@ namespace Forge.Infrastructure.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding project membership for user {UserId} and project {ProjectId}", member.UserId, member.ProjectId);
+
+                throw;
+            }
+        }
+
+        public Task RemoveAsync(ProjectMember member)
+        {
+            try
+            {
+                _dbContext.ProjectMembers.Remove(member);
+
+                return Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error removing user {UserId} from project {ProjectId}", member.UserId, member.ProjectId);
+
+                throw;
+            }
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error saving project membership changes.");
 
                 throw;
             }

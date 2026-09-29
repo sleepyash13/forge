@@ -12,6 +12,7 @@ namespace Forge.Domain.Enums
         CreateBuild =4,
         Deploy = 5,
         ManageSettings = 6,
-        DeleteProject = 7
+        DeleteProject = 7,
+        ArchiveProject = 8
     }
 }
