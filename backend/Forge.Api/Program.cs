@@ -1,5 +1,5 @@
 using Forge.Api.Middleware;
-using Forge.Application.Features.ProjectRepositories.Queries.GetRepository;
+using Forge.Application;
 using Forge.Application.Interfaces.Auth;
 using Forge.Application.Interfaces.Projects;
 using Forge.Application.Interfaces.Projects.Repository;
@@ -41,7 +41,7 @@ builder.Services.AddDbContext<ForgeDbContext>(options => {
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMediatR(configuration =>
-    configuration.RegisterServicesFromAssembly(typeof(GetRepositoryQuery).Assembly));
+    configuration.RegisterServicesFromAssembly(typeof(ApplicationAssemblyMarker).Assembly));
 
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();

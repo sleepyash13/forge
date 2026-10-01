@@ -4,19 +4,19 @@ using Forge.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Forge.Application.Features.ProjectRepositories.Commands.DeleteRepository;
+namespace Forge.Application.Features.RepositoryConfigurations.Commands.DeleteRepositoryConfiguration;
 
-public sealed class DeleteRepositoryCommandHandler
-    : IRequestHandler<DeleteRepositoryCommand, Unit>
+public sealed class DeleteRepositoryConfigurationCommandHandler
+    : IRequestHandler<DeleteRepositoryConfigurationCommand, Unit>
 {
     private readonly IProjectRepositoryConfigurationRepository _repository;
     private readonly IProjectAuthorizationService _authorizationService;
-    private readonly ILogger<DeleteRepositoryCommandHandler> _logger;
+    private readonly ILogger<DeleteRepositoryConfigurationCommandHandler> _logger;
 
-    public DeleteRepositoryCommandHandler(
+    public DeleteRepositoryConfigurationCommandHandler(
         IProjectRepositoryConfigurationRepository repository,
         IProjectAuthorizationService authorizationService,
-        ILogger<DeleteRepositoryCommandHandler> logger)
+        ILogger<DeleteRepositoryConfigurationCommandHandler> logger)
     {
         _repository = repository;
         _authorizationService = authorizationService;
@@ -24,7 +24,7 @@ public sealed class DeleteRepositoryCommandHandler
     }
 
     public async Task<Unit> Handle(
-        DeleteRepositoryCommand command,
+        DeleteRepositoryConfigurationCommand command,
         CancellationToken cancellationToken)
     {
         await _authorizationService.HasPermissionAsync(

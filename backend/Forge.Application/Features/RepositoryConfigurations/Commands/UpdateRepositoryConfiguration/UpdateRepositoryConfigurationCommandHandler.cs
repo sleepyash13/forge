@@ -6,19 +6,19 @@ using Forge.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Forge.Application.Features.ProjectRepositories.Commands.UpdateRepository;
+namespace Forge.Application.Features.RepositoryConfigurations.Commands.UpdateRepositoryConfiguration;
 
-public sealed class UpdateRepositoryCommandHandler
-    : IRequestHandler<UpdateRepositoryCommand, RepositoryResponse>
+public sealed class UpdateRepositoryConfigurationCommandHandler
+    : IRequestHandler<UpdateRepositoryConfigurationCommand, RepositoryResponse>
 {
     private readonly IProjectRepositoryConfigurationRepository _repository;
     private readonly IProjectAuthorizationService _authorizationService;
-    private readonly ILogger<UpdateRepositoryCommandHandler> _logger;
+    private readonly ILogger<UpdateRepositoryConfigurationCommandHandler> _logger;
 
-    public UpdateRepositoryCommandHandler(
+    public UpdateRepositoryConfigurationCommandHandler(
         IProjectRepositoryConfigurationRepository repository,
         IProjectAuthorizationService authorizationService,
-        ILogger<UpdateRepositoryCommandHandler> logger)
+        ILogger<UpdateRepositoryConfigurationCommandHandler> logger)
     {
         _repository = repository;
         _authorizationService = authorizationService;
@@ -26,7 +26,7 @@ public sealed class UpdateRepositoryCommandHandler
     }
 
     public async Task<RepositoryResponse> Handle(
-        UpdateRepositoryCommand command,
+        UpdateRepositoryConfigurationCommand command,
         CancellationToken cancellationToken)
     {
         await _authorizationService.HasPermissionAsync(
@@ -57,7 +57,7 @@ public sealed class UpdateRepositoryCommandHandler
                 command.ProjectId,
                 command.UserId);
 
-            return RepositoryResponseMapper.ToResponse(repository);
+            return RepositoryConfigurationResponseMapper.ToResponse(repository);
         }
         catch (Exception ex)
         {

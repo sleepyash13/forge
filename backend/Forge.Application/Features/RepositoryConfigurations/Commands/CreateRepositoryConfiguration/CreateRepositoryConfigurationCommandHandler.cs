@@ -7,19 +7,19 @@ using Forge.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Forge.Application.Features.ProjectRepositories.Commands.CreateRepository;
+namespace Forge.Application.Features.RepositoryConfigurations.Commands.CreateRepositoryConfiguration;
 
-public sealed class CreateRepositoryCommandHandler
-    : IRequestHandler<CreateRepositoryCommand, RepositoryResponse>
+public sealed class CreateRepositoryConfigurationCommandHandler
+    : IRequestHandler<CreateRepositoryConfigurationCommand, RepositoryResponse>
 {
     private readonly IProjectRepositoryConfigurationRepository _repository;
     private readonly IProjectAuthorizationService _authorizationService;
-    private readonly ILogger<CreateRepositoryCommandHandler> _logger;
+    private readonly ILogger<CreateRepositoryConfigurationCommandHandler> _logger;
 
-    public CreateRepositoryCommandHandler(
+    public CreateRepositoryConfigurationCommandHandler(
         IProjectRepositoryConfigurationRepository repository,
         IProjectAuthorizationService authorizationService,
-        ILogger<CreateRepositoryCommandHandler> logger)
+        ILogger<CreateRepositoryConfigurationCommandHandler> logger)
     {
         _repository = repository;
         _authorizationService = authorizationService;
@@ -27,7 +27,7 @@ public sealed class CreateRepositoryCommandHandler
     }
 
     public async Task<RepositoryResponse> Handle(
-        CreateRepositoryCommand command,
+        CreateRepositoryConfigurationCommand command,
         CancellationToken cancellationToken)
     {
         await _authorizationService.HasPermissionAsync(
@@ -65,7 +65,7 @@ public sealed class CreateRepositoryCommandHandler
                 command.UserId,
                 repository.Id);
 
-            return RepositoryResponseMapper.ToResponse(repository);
+            return RepositoryConfigurationResponseMapper.ToResponse(repository);
         }
         catch (Exception ex)
         {

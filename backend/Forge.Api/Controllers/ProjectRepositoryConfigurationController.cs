@@ -1,9 +1,9 @@
 using Forge.Application.Common.Extensions;
 using Forge.Application.DTOs.Projects.Repository;
-using Forge.Application.Features.ProjectRepositories.Commands.CreateRepository;
-using Forge.Application.Features.ProjectRepositories.Commands.DeleteRepository;
-using Forge.Application.Features.ProjectRepositories.Commands.UpdateRepository;
-using Forge.Application.Features.ProjectRepositories.Queries.GetRepository;
+using Forge.Application.Features.RepositoryConfigurations.Commands.CreateRepositoryConfiguration;
+using Forge.Application.Features.RepositoryConfigurations.Commands.DeleteRepositoryConfiguration;
+using Forge.Application.Features.RepositoryConfigurations.Commands.UpdateRepositoryConfiguration;
+using Forge.Application.Features.RepositoryConfigurations.Queries.GetRepositoryConfiguration;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +28,7 @@ namespace Forge.Api.Controllers
         {
             var userId = User.GetUserId();
             var repository = await _sender.Send(
-                new GetRepositoryQuery(userId, projectId),
+                new GetRepositoryConfigurationQuery(userId, projectId),
                 cancellationToken);
 
             if (repository == null)
@@ -48,7 +48,7 @@ namespace Forge.Api.Controllers
         {
             var userId = User.GetUserId();
             var repository = await _sender.Send(
-                new CreateRepositoryCommand(userId, projectId, request),
+                new CreateRepositoryConfigurationCommand(userId, projectId, request),
                 cancellationToken);
 
             return CreatedAtAction(nameof(Get), new { projectId }, repository);
@@ -63,7 +63,7 @@ namespace Forge.Api.Controllers
         {
             var userId = User.GetUserId();
             var repository = await _sender.Send(
-                new UpdateRepositoryCommand(userId, projectId, request),
+                new UpdateRepositoryConfigurationCommand(userId, projectId, request),
                 cancellationToken);
 
             return Ok(repository);
@@ -76,7 +76,7 @@ namespace Forge.Api.Controllers
             var userId = User.GetUserId();
 
             await _sender.Send(
-                new DeleteRepositoryCommand(userId, projectId),
+                new DeleteRepositoryConfigurationCommand(userId, projectId),
                 cancellationToken);
 
             return Ok(new

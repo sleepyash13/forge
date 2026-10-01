@@ -5,19 +5,19 @@ using Forge.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Forge.Application.Features.ProjectRepositories.Queries.GetRepository;
+namespace Forge.Application.Features.RepositoryConfigurations.Queries.GetRepositoryConfiguration;
 
-public sealed class GetRepositoryQueryHandler
-    : IRequestHandler<GetRepositoryQuery, RepositoryResponse?>
+public sealed class GetRepositoryConfigurationQueryHandler
+    : IRequestHandler<GetRepositoryConfigurationQuery, RepositoryResponse?>
 {
     private readonly IProjectRepositoryConfigurationRepository _repository;
     private readonly IProjectAuthorizationService _authorizationService;
-    private readonly ILogger<GetRepositoryQueryHandler> _logger;
+    private readonly ILogger<GetRepositoryConfigurationQueryHandler> _logger;
 
-    public GetRepositoryQueryHandler(
+    public GetRepositoryConfigurationQueryHandler(
         IProjectRepositoryConfigurationRepository repository,
         IProjectAuthorizationService authorizationService,
-        ILogger<GetRepositoryQueryHandler> logger)
+        ILogger<GetRepositoryConfigurationQueryHandler> logger)
     {
         _repository = repository;
         _authorizationService = authorizationService;
@@ -25,7 +25,7 @@ public sealed class GetRepositoryQueryHandler
     }
 
     public async Task<RepositoryResponse?> Handle(
-        GetRepositoryQuery query,
+        GetRepositoryConfigurationQuery query,
         CancellationToken cancellationToken)
     {
         await _authorizationService.HasPermissionAsync(
@@ -38,7 +38,7 @@ public sealed class GetRepositoryQueryHandler
             var repository = await _repository.GetByProjectIdAsync(query.ProjectId);
             return repository is null
                 ? null
-                : RepositoryResponseMapper.ToResponse(repository);
+                : RepositoryConfigurationResponseMapper.ToResponse(repository);
         }
         catch (Exception ex)
         {

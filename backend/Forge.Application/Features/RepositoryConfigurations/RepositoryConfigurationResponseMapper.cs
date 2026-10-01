@@ -1,9 +1,9 @@
 using Forge.Application.DTOs.Projects.Repository;
 using Forge.Domain.Entities;
 
-namespace Forge.Application.Features.ProjectRepositories;
+namespace Forge.Application.Features.RepositoryConfigurations;
 
-internal static class RepositoryResponseMapper
+internal static class RepositoryConfigurationResponseMapper
 {
     public static RepositoryResponse ToResponse(ProjectRepositoryConfiguration repository)
     {
