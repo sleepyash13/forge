@@ -1,9 +1,11 @@
 using Forge.Application.Common.Extensions;
 using Forge.Application.DTOs.Projects.Repository;
-using Forge.Application.Interfaces.Projects.Repository;
-using Forge.Application.Interfaces.Projects;
+using Forge.Application.Features.ProjectRepositories.Commands.CreateRepository;
+using Forge.Application.Features.ProjectRepositories.Commands.DeleteRepository;
+using Forge.Application.Features.ProjectRepositories.Commands.UpdateRepository;
+using Forge.Application.Features.ProjectRepositories.Queries.GetRepository;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Forge.Api.Controllers
@@ -14,17 +16,20 @@ namespace Forge.Api.Controllers
 
     public class ProjectRepositoryConfigurationController : ControllerBase
     {
-        private readonly IProjectRepositoryConfigurationService _repositoryService;
-        public ProjectRepositoryConfigurationController(IProjectRepositoryConfigurationService repositoryService)
+        private readonly ISender _sender;
+
+        public ProjectRepositoryConfigurationController(ISender sender)
         {
-            _repositoryService = repositoryService;
+            _sender = sender;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(Guid projectId)
+        public async Task<IActionResult> Get(Guid projectId, CancellationToken cancellationToken)
         {
             var userId = User.GetUserId();
-            var repository = await _repositoryService.GetAsync(userId, projectId);
+            var repository = await _sender.Send(
+                new GetRepositoryQuery(userId, projectId),
+                cancellationToken);
 
             if (repository == null)
             {
@@ -36,31 +41,43 @@ namespace Forge.Api.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Guid projectId, [FromBody] CreateRepositoryRequest request)
+        public async Task<IActionResult> Create(
+            Guid projectId,
+            [FromBody] CreateRepositoryRequest request,
+            CancellationToken cancellationToken)
         {
             var userId = User.GetUserId();
-            var repository = await _repositoryService.CreateAsync(userId, projectId, request);
+            var repository = await _sender.Send(
+                new CreateRepositoryCommand(userId, projectId, request),
+                cancellationToken);
 
-            return CreatedAtAction(nameof(Get), new { projectId = projectId }, repository);
+            return CreatedAtAction(nameof(Get), new { projectId }, repository);
         }
 
         [HttpPut]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(Guid projectId, [FromBody] UpdateRepositoryRequest request)
+        public async Task<IActionResult> Update(
+            Guid projectId,
+            [FromBody] UpdateRepositoryRequest request,
+            CancellationToken cancellationToken)
         {
             var userId = User.GetUserId();
-            var repository = await _repositoryService.UpdateAsync(userId, projectId, request);
+            var repository = await _sender.Send(
+                new UpdateRepositoryCommand(userId, projectId, request),
+                cancellationToken);
 
             return Ok(repository);
         }
 
         [HttpDelete]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid projectId)
+        public async Task<IActionResult> Delete(Guid projectId, CancellationToken cancellationToken)
         {
             var userId = User.GetUserId();
 
-            await _repositoryService.DeleteAsync(userId, projectId);
+            await _sender.Send(
+                new DeleteRepositoryCommand(userId, projectId),
+                cancellationToken);
 
             return Ok(new
             {

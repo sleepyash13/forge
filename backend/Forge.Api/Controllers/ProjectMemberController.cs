@@ -1,7 +1,10 @@
-﻿using Forge.Application.Common.Extensions;
+using Forge.Application.Common.Extensions;
 using Forge.Application.DTOs.Projects;
-using Forge.Application.Interfaces.Projects;
-using Forge.Domain.Entities;
+using Forge.Application.Features.ProjectMembers.Commands.AddProjectMember;
+using Forge.Application.Features.ProjectMembers.Commands.RemoveProjectMember;
+using Forge.Application.Features.ProjectMembers.Commands.UpdateProjectMemberRole;
+using Forge.Application.Features.ProjectMembers.Queries.GetProjectMembers;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,50 +15,72 @@ namespace Forge.Api.Controllers
     [Authorize]
     public class ProjectMemberController : ControllerBase
     {
-        private readonly IProjectMemberService _memberService;
-        private readonly ILogger<ProjectMemberController> _logger;
+        private readonly ISender _sender;
 
-        public ProjectMemberController(IProjectMemberService memberService, ILogger<ProjectMemberController> logger)
-        { 
-            _memberService = memberService;
-            _logger = logger;
+        public ProjectMemberController(ISender sender)
+        {
+            _sender = sender;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMembers(Guid projectId)
+        public async Task<IActionResult> GetMembers(
+            Guid projectId,
+            CancellationToken cancellationToken)
         {
             var userId = User.GetUserId();
-            var result = await _memberService.GetMembersAsync(userId, projectId);
+            var result = await _sender.Send(
+                new GetProjectMembersQuery(userId, projectId),
+                cancellationToken);
 
             return Ok(result);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddMember(Guid projectId, AddProjectMemberRequest request)
+        public async Task<IActionResult> AddMember(
+            Guid projectId,
+            AddProjectMemberRequest request,
+            CancellationToken cancellationToken)
         {
             var userId = User.GetUserId();
-            var result = await _memberService.AddMemberAsync(userId, projectId, request);
+            var result = await _sender.Send(
+                new AddProjectMemberCommand(userId, projectId, request),
+                cancellationToken);
 
             return Ok(result);
         }
 
         [HttpPut("{targetUserId:guid}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateRole(Guid projectId, Guid targetUserId, UpdateProjectMemberRoleRequest request)
+        public async Task<IActionResult> UpdateRole(
+            Guid projectId,
+            Guid targetUserId,
+            UpdateProjectMemberRoleRequest request,
+            CancellationToken cancellationToken)
         {
             var userId = User.GetUserId();
-            var result = await _memberService.UpdateRoleAsync(userId, projectId, targetUserId, request);
+            var result = await _sender.Send(
+                new UpdateProjectMemberRoleCommand(
+                    userId,
+                    projectId,
+                    targetUserId,
+                    request),
+                cancellationToken);
 
             return Ok(result);
         }
 
         [HttpDelete("{targetUserId:guid}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveMember(Guid projectId, Guid targetUserId)
+        public async Task<IActionResult> RemoveMember(
+            Guid projectId,
+            Guid targetUserId,
+            CancellationToken cancellationToken)
         {
             var userId = User.GetUserId();
-            await _memberService.RemoveMemberAsync(userId, projectId, targetUserId);
+            await _sender.Send(
+                new RemoveProjectMemberCommand(userId, projectId, targetUserId),
+                cancellationToken);
 
             return NoContent();
         }
