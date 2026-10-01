@@ -3,8 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import projectService from '../services/projectService';
 import type { Project } from '../types/project.types';
 import Swal from 'sweetalert2';
+import ProjectNavigation from '../components/ProjectNavigation';
 
-export default function ProjectDetails() {
+export default function Overview() {
     const { projectId } = useParams();
     const navigate = useNavigate();
 
@@ -132,13 +133,6 @@ export default function ProjectDetails() {
         }
     };
 
-    const handleMembers = () => {
-        if (!projectId) {
-            return;
-        }
-        navigate(`/projects/${projectId}/members`);
-    };
-
     if (loading) {
         return (
             <div className="container-fluid">
@@ -159,20 +153,14 @@ export default function ProjectDetails() {
 
     return (
         <div className="container-fluid">
+            <ProjectNavigation />
+
             <div className="row">
                 <div className="col-lg-8">
                     <div className="card">
                         <div className="card-header d-flex justify-content-between align-items-center">
                             <h5 className="mb-0">Project</h5>
-
-                            <button
-                                className="btn btn-sm btn-outline-primary"
-                                onClick={handleMembers}>
-                                <i className="bi bi-person-plus me-1"></i>
-                                Add Member
-                            </button>
                         </div>
-
 
                         <div className="card-body">
                             {message && (

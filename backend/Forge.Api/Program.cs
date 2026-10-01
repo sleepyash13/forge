@@ -1,9 +1,11 @@
 using Forge.Api.Middleware;
 using Forge.Application.Interfaces.Auth;
 using Forge.Application.Interfaces.Projects;
+using Forge.Application.Interfaces.Projects.Repository;
 using Forge.Application.Interfaces.Users;
 using Forge.Application.Services.Auth;
 using Forge.Application.Services.Projects;
+using Forge.Application.Services.Projects.Repository;
 using Forge.Domain.Entities;
 using Forge.Infrastructure.Authentication;
 using Forge.Infrastructure.Logging;
@@ -51,6 +53,8 @@ builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
 builder.Services.AddScoped<IProjectAuthorizationService, ProjectAuthorizationService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
+builder.Services.AddScoped<IProjectRepositoryConfigurationRepository, ProjectRepositoryConfigurationRepository>();
+builder.Services.AddScoped<IProjectRepositoryConfigurationService, ProjectRepositoryConfigurationService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured.");
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];

@@ -15,8 +15,9 @@ import ProtectedRoute from '../routes/ProtectedRoute';
 
 import Projects from '../features/project/pages/List'
 import CreateProject from '../features/project/pages/Create'
-import ProjectDetails from '../features/project/pages/EditDetails'
-import ProjectMembers from '../features/project/pages/ProjectMembers'
+import Overview from '../features/project/pages/Overview'
+import Members from '../features/project/pages/Members'
+import Repository from '../features/project/pages/Repository';
 
 const AppRoutes = () => {
     return (
@@ -37,8 +38,9 @@ const AppRoutes = () => {
                     
                     <Route path="/projects" element={<Projects />} />
                     <Route path="/projects/create" element={<CreateProject />} />
-                    <Route path="/projects/:projectId" element={<ProjectDetails />} />
-                    <Route path="/projects/:projectId/members" element={<ProjectMembers />} />
+                    <Route path="/projects/:projectId" element={<Overview />} />
+                    <Route path="/projects/:projectId/members" element={<Members />} />
+                    <Route path="/projects/:projectId/repository" element={<Repository />} />
                 </Route>
             </Route>
 

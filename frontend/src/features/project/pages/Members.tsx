@@ -8,6 +8,8 @@ import projectService from '../services/projectService';
 import type { ProjectMember } from '../types/projectMember.types';
 import type { Project } from '../types/project.types';
 
+import ProjectNavigation from '../components/ProjectNavigation';
+
 const roles = [
     'Owner',
     'Maintainer',
@@ -17,8 +19,7 @@ const roles = [
 
 const ProjectMembers = () => {
     const { projectId } = useParams<{ projectId: string }>();
-    const navigate = useNavigate();
-
+    
     const [project, setProject] = useState<Project | null>(null);
     const [members, setMembers] = useState<ProjectMember[]>([]);
 
@@ -248,14 +249,10 @@ const ProjectMembers = () => {
 
     return (
         <div className='container-fluid py-4'>
+            <ProjectNavigation />
+
             <div className='d-flex justify-content-between align-items-center mb-4'>
                 <div>
-                    <button type='button' className='btn btn-link p-0 mb-2 text-decoration-none' 
-                        onClick={() => navigate(`/projects/${projectId}`) } >
-                        <i className='bi bi-arrow-left'></i> 
-                        Back to Project
-                    </button>
-
                     <h2 className='mb-1'>
                         {project?.name ?? 'Project'} Members
                     </h2>

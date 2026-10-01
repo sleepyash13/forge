@@ -17,6 +17,7 @@ namespace Forge.Infrastructure.Persistence
         public DbSet<Project> Projects => Set<Project>();
         public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
         public DbSet<ApplicationLog> ApplicationLogs => Set<ApplicationLog>();
+        public DbSet<ProjectRepositoryConfiguration> ProjectRepositoryConfigurations => Set<ProjectRepositoryConfiguration>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
